@@ -1,0 +1,44 @@
+version: "2"
+services:
+   exercice9-db:
+       image: mysql:5.7
+       environment:
+           MYSQL_ROOT_PASSWORD: cours8
+           MYSQL_DATABASE: exo6
+           MYSQL_USER: justine
+           MYSQL_PASSWORD: cours8
+       networks:
+           - net-prive
+       ports:
+           - "3306:3306"
+   exercice9-wordpress:
+       build: ./wordpress 
+#       image: file-wp:latest
+       depends_on:
+           - exercice9-db
+       environment:
+           WORDPRESS_DB_HOST: exercice9-db
+           WORDPRESS_DB_PASSWORD: cours8
+       networks:
+           - net-prive
+       volumes:
+           - exercice6:/var/www/html
+   exercice9-apache:
+       build: ./apache
+#       image: exercice2
+       depends_on:
+           - exercice9-wordpress
+       networks:
+           - net-prive
+           - net-pub
+       ports:
+           - "8092:80"
+       volumes:
+           - exercice6:/var/www/html
+volumes:
+   exercice6:
+       external: true
+networks:
+   net-prive:
+   net-pub:
+
